@@ -24,6 +24,7 @@ class productController extends Controller
         }
 
         $query = Product::query()
+            ->where('user_id', $request->user()->id)
             ->search($request->get('search'))
             ->status($request->get('status'))
             ->minStock($request->get('min_stock'))
@@ -72,7 +73,8 @@ class productController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $products = Product::create($request->validated());
+        $products = Product::create([$request->validated()
+                        ,'user_id' => $request->user()->id]);
         return response()->json([
             'status' => true,
             'message' => 'Product created successfully',
