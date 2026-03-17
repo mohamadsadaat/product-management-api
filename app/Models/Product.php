@@ -15,7 +15,13 @@ class Product extends Model
         'price',
         'stock',
         'status',
+        'user_id',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
        public function scopeInStock(Builder $query): Builder
     {
         return $query->where('stock', '>', 0);
