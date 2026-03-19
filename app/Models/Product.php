@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Product extends Model
 {
     //
+    use HasFactory;
      protected $fillable = [
         'name',
         'sku',
@@ -16,10 +18,16 @@ class Product extends Model
         'stock',
         'status',
         'user_id',
+        'category_id',
     ];
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
        public function scopeInStock(Builder $query): Builder

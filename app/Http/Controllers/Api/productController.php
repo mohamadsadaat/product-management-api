@@ -17,6 +17,7 @@ class productController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Product::class);
         $perPage = (int) $request->get('per_page', 10);
 
         if ($perPage < 1 || $perPage > 50) {
@@ -24,10 +25,12 @@ class productController extends Controller
         }
 
         $query = Product::query()
+            ->with('category')
             ->where('user_id', $request->user()->id)
             ->search($request->get('search'))
             ->status($request->get('status'))
             ->minStock($request->get('min_stock'))
+            ->category($request->get('category_id'))
             ->priceBetween($request->get('min_price'), $request->get('max_price'))
             ->sort($request->get('sort_by'), $request->get('sort_direction'));
 
@@ -53,6 +56,7 @@ class productController extends Controller
                 'in_stock' => $request->boolean('in_stock'),
                 'only_active' => $request->boolean('only_active'),
                 'sort_by' => $request->get('sort_by', 'created_at'),
+                'category_id' => $request->get('category_id'),
                 'sort_direction' => $request->get('sort_direction', 'desc'),
                 'per_page' => $perPage,
             ],
@@ -73,12 +77,15 @@ class productController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $products = Product::create([$request->validated()
-                        ,'user_id' => $request->user()->id]);
+        $this->authorize('create', Product::class);
+        $product = Product::create(array_merge($request->validated(), [
+            'user_id' => $request->user()->id
+        ]));
+        $product->load('category');
         return response()->json([
             'status' => true,
             'message' => 'Product created successfully',
-            'data' => new ProductResource($products),
+            'data' => new ProductResource($product),
         ], 201);
     }
     
@@ -88,6 +95,7 @@ class productController extends Controller
      */
     public function show(Product $product)
     {
+        $this->authorize('view', $product);
         return response()->json([
             'status' => true,
             'message' => 'Product fetched successfully',
@@ -100,6 +108,7 @@ class productController extends Controller
      */
      public function update(UpdateProductRequest $request, Product $product)
     {
+        $this->authorize('update', $product);
         $product->update($request->validated());
 
         return response()->json([
@@ -114,6 +123,7 @@ class productController extends Controller
      */
      public function destroy(Product $product)
     {
+        $this->authorize('delete', $product);
         $product->delete();
 
         return response()->json([
