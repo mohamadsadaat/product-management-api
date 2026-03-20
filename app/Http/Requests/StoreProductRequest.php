@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Storage;
 
 class StoreProductRequest extends FormRequest
 {
@@ -30,6 +31,7 @@ class StoreProductRequest extends FormRequest
             'stock' => 'required|integer|min:0',
             'status' => 'required|in:active,inactive',
             'category_id' => 'nullable|exists:categories,id',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
     }
 }

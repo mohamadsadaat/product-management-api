@@ -24,12 +24,14 @@ class ProductResource extends JsonResource
             'status' => $this->status,
             'user_id' => $this->user_id,
             'is_owner' => $this->user_id === auth()->id(),
+            'image' => $this->image,
+            'image_url' => $this->image ? asset('storage/' . $this->image) : null,
             'category_id' => $this->category_id,
             'category' => $this->whenLoaded('category', function () {
-                return [
+                return $this->category ? [
                     'id' => $this->category->id,
                     'name' => $this->category->name,
-                ];
+                ] : null;
             }),
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),

@@ -19,6 +19,7 @@ class Product extends Model
         'status',
         'user_id',
         'category_id',
+        'image',
     ];
     public function user()
     {

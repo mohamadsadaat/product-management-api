@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Http\Resources\ProductResource;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use Illuminate\Support\Facades\Storage;
 
 
 class productController extends Controller
@@ -30,7 +31,9 @@ class productController extends Controller
             ->search($request->get('search'))
             ->status($request->get('status'))
             ->minStock($request->get('min_stock'))
-            ->category($request->get('category_id'))
+            ->when($request->get('category_id'), function ($query, $categoryId) {
+                return $query->where('category_id', $categoryId);
+            })
             ->priceBetween($request->get('min_price'), $request->get('max_price'))
             ->sort($request->get('sort_by'), $request->get('sort_direction'));
 
@@ -42,7 +45,7 @@ class productController extends Controller
             $query->active();
         }
 
-        $products = $query->paginate($perPage);
+        $products = $query->with('category')->paginate($perPage);
 
         return response()->json([
             'status' => true,
@@ -78,10 +81,20 @@ class productController extends Controller
     public function store(StoreProductRequest $request)
     {
         $this->authorize('create', Product::class);
-        $product = Product::create(array_merge($request->validated(), [
-            'user_id' => $request->user()->id
-        ]));
+
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('products', 'public');
+        }
+
+        $product = Product::create([
+            ...$data,
+            'user_id' => $request->user()->id,
+        ]);
+
         $product->load('category');
+
         return response()->json([
             'status' => true,
             'message' => 'Product created successfully',
@@ -106,11 +119,23 @@ class productController extends Controller
     /**
      * Update the specified resource in storage.
      */
-     public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
         $this->authorize('update', $product);
-        $product->update($request->validated());
 
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $data['image'] = $request->file('image')->store('products', 'public');
+        }
+        
+        $product->update($data);
+        $product->load('category');
+       
         return response()->json([
             'status' => true,
             'message' => 'Product updated successfully',
@@ -121,9 +146,14 @@ class productController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-     public function destroy(Product $product)
+    public function destroy(Product $product)
     {
         $this->authorize('delete', $product);
+
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
+        }
+
         $product->delete();
 
         return response()->json([

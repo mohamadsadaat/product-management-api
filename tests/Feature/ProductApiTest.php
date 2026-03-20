@@ -38,6 +38,65 @@ class ProductApiTest extends TestCase
             ]);
     }
 
+    public function test_user_can_update_product(): void
+    {
+        $user = User::factory()->create();
+
+        Sanctum::actingAs($user);
+
+        $product = Product::factory()->create([
+            'user_id' => $user->id,
+            'name' => 'Original Product',
+            'price' => 100,
+        ]);
+
+        $response = $this->putJson("/api/products/{$product->id}", [
+            'name' => 'Updated Product',
+            'description' => 'Updated description',
+            'price' => 150,
+            'sku' => 'UPDATED-001',
+            'stock' => 10,
+            'status' => 'active',
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                'status',
+                'message',
+                'data',
+            ])
+            ->assertJsonFragment([
+                'status' => true,
+                'message' => 'Product updated successfully',
+            ]);
+
+        $this->assertDatabaseHas('products', [
+            'id' => $product->id,
+            'name' => 'Updated Product',
+            'price' => 150,
+        ]);
+    }
+
+    public function test_user_cannot_update_another_users_product(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+
+        $product = Product::factory()->create([
+            'user_id' => $otherUser->id,
+            'name' => 'Other Product',
+        ]);
+
+        Sanctum::actingAs($user);
+
+        $response = $this->putJson("/api/products/{$product->id}", [
+            'name' => 'Updated Product',
+            'price' => 150,
+        ]);
+
+        $response->assertStatus(403);
+    }
+
     public function test_user_can_only_see_their_own_products(): void
     {
         $user = User::factory()->create();

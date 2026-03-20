@@ -23,6 +23,8 @@ Route::middleware('auth:sanctum')->group(function () {
     
     ///////////products///////////
     Route::apiResource('products',productController::class);
+    ////update_becuase_put and putch no word multi part form 
+    Route::post('products/{product}/update',[productController::class,'update']);
     ///////////categories///////////
     Route::apiResource('categories',CategoryController::class);
 });
