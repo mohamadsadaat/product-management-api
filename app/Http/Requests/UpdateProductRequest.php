@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+
 class UpdateProductRequest extends FormRequest
 {
     /**
@@ -22,8 +23,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
-          $product = $this->route('product');
-       
+        $product = $this->route('product');
 
         return [
             'name' => 'sometimes|string|max:255',

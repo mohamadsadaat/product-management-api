@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Traits\ApiResponse;
-use Illuminate\Http\Request;
-use App\Models\Product;
-use App\Http\Resources\ProductResource;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
+use App\Models\Product;
+use App\Traits\ApiResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
 
 class productController extends Controller
 {
@@ -22,6 +21,7 @@ class productController extends Controller
      *     summary="List products",
      *     tags={"Products"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(name="search", in="query", description="Search by name or description", @OA\Schema(type="string")),
      *     @OA\Parameter(name="status", in="query", description="Filter by status", @OA\Schema(type="string", enum={"active","inactive"})),
      *     @OA\Parameter(name="category_id", in="query", description="Filter by category", @OA\Schema(type="integer")),
@@ -31,6 +31,7 @@ class productController extends Controller
      *     @OA\Parameter(name="sort_by", in="query", description="Sort field", @OA\Schema(type="string")),
      *     @OA\Parameter(name="sort_direction", in="query", description="Sort direction", @OA\Schema(type="string", enum={"asc","desc"})),
      *     @OA\Parameter(name="per_page", in="query", description="Items per page", @OA\Schema(type="integer")),
+     *
      *     @OA\Response(response=200, description="Products fetched successfully"),
      *     @OA\Response(response=401, description="Unauthenticated")
      * )
@@ -102,12 +103,16 @@ class productController extends Controller
      *     summary="Create product",
      *     tags={"Products"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
+     *
      *             @OA\Schema(
      *                 required={"name","price","stock","status"},
+     *
      *                 @OA\Property(property="name", type="string", example="Laptop"),
      *                 @OA\Property(property="sku", type="string", example="LAPTOP-001"),
      *                 @OA\Property(property="description", type="string", example="Gaming laptop"),
@@ -119,6 +124,7 @@ class productController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=201, description="Product created successfully"),
      *     @OA\Response(response=422, description="Validation error")
      * )
@@ -142,7 +148,6 @@ class productController extends Controller
 
         return $this->successResponse('Product created successfully', new ProductResource($product), 201);
     }
-    
 
     /**
      * @OA\Get(
@@ -150,7 +155,9 @@ class productController extends Controller
      *     summary="Get single product",
      *     tags={"Products"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(name="product", in="path", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\Response(response=200, description="Product fetched successfully"),
      *     @OA\Response(response=403, description="Forbidden"),
      *     @OA\Response(response=404, description="Not found")
@@ -159,6 +166,7 @@ class productController extends Controller
     public function show(Product $product)
     {
         $this->authorize('view', $product);
+
         return $this->successResponse('Product fetched successfully', new ProductResource($product));
     }
 
@@ -168,12 +176,17 @@ class productController extends Controller
      *     summary="Update product",
      *     tags={"Products"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(name="product", in="path", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
+     *
      *             @OA\Schema(
+     *
      *                 @OA\Property(property="name", type="string"),
      *                 @OA\Property(property="description", type="string"),
      *                 @OA\Property(property="price", type="number", format="float"),
@@ -185,6 +198,7 @@ class productController extends Controller
      *             )
      *         )
      *     ),
+     *
      *     @OA\Response(response=200, description="Product updated successfully")
      * )
      */
@@ -201,10 +215,10 @@ class productController extends Controller
 
             $data['image'] = $request->file('image')->store('products', 'public');
         }
-        
+
         $product->update($data);
         $product->load('category');
-       
+
         return $this->successResponse('Product updated successfully', new ProductResource($product));
     }
 
@@ -214,7 +228,9 @@ class productController extends Controller
      *     summary="Soft delete product",
      *     tags={"Products"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(name="product", in="path", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\Response(response=200, description="Product moved to trash successfully")
      * )
      */
@@ -233,6 +249,7 @@ class productController extends Controller
      *     summary="List trashed products",
      *     tags={"Products"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(response=200, description="Trashed products fetched successfully")
      * )
      */
@@ -269,7 +286,9 @@ class productController extends Controller
      *     summary="Restore trashed product",
      *     tags={"Products"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(name="product", in="path", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\Response(response=200, description="Product restored successfully")
      * )
      */
@@ -289,7 +308,9 @@ class productController extends Controller
      *     summary="Force delete trashed product",
      *     tags={"Products"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(name="product", in="path", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\Response(response=200, description="Product permanently deleted successfully")
      * )
      */

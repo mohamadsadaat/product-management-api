@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -11,24 +10,24 @@ class AuthTest extends TestCase
     /**
      * A basic feature test example.
      */
-     use RefreshDatabase;
+    use RefreshDatabase;
 
-   public function test_user_can_register(): void
-   {
-    $response = $this->postJson('/api/register',[
-        'name' => 'Ali',
-        'email' => 'ali22@example.com',
-       'password' => 'password123',
+    public function test_user_can_register(): void
+    {
+        $response = $this->postJson('/api/register', [
+            'name' => 'Ali',
+            'email' => 'ali22@example.com',
+            'password' => 'password123',
             'password_confirmation' => 'password123',
-    ]);
-    $response->assertStatus(201)
-             ->assertJsonStructure([
+        ]);
+        $response->assertStatus(201)
+            ->assertJsonStructure([
                 'status',
                 'message',
                 'user',
                 'token',
-             ]);
-   }
+            ]);
+    }
 
     public function test_user_can_login(): void
     {
@@ -52,5 +51,4 @@ class AuthTest extends TestCase
                 'token',
             ]);
     }
-
 }

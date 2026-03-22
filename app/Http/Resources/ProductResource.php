@@ -25,7 +25,7 @@ class ProductResource extends JsonResource
             'user_id' => $this->user_id,
             'is_owner' => $this->user_id === auth()->id(),
             'image' => $this->image,
-            'image_url' => $this->image ? asset('storage/' . $this->image) : null,
+            'image_url' => $this->image ? asset('storage/'.$this->image) : null,
             'category_id' => $this->category_id,
             'category' => $this->whenLoaded('category', function () {
                 return $this->category ? [

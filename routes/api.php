@@ -1,27 +1,28 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\productController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\productController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-Route::post('/login',[AuthController::class,'login']);
-Route::post('/register',[AuthController::class,'register']);
-Route::post('/logout',[AuthController::class,'logout']);
-Route::get('/me',[AuthController::class,'me']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout']);
+Route::get('/me', [AuthController::class, 'me']);
 
-///////////login///////////
-Route::post('/regiter',[AuthController::class,'register']);
-Route::post('/login',[AuthController::class,'login']);
+// /////////login///////////
+Route::post('/regiter', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout',[AuthController::class,'logout']);
-    Route::get('/me',[AuthController::class,'me']);
-    
-    ///////////products///////////
-    ////delete treash
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/me', [AuthController::class, 'me']);
+
+    // /////////products///////////
+    // //delete treash
     Route::get('/products/trash', [productController::class, 'trash'])->name('products.trash');
     Route::post('/products/{product}/restore', [productController::class, 'restore'])
         ->withTrashed()
@@ -29,10 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/products/{product}/force', [productController::class, 'forceDelete'])
         ->withTrashed()
         ->name('products.force-delete');
-    //update_becuase_put and putch no word multi part form
-    Route::post('products/{product}/update',[productController::class,'update']);
-    Route::apiResource('products',productController::class);
-    ///////////categories///////////
-    Route::apiResource('categories',CategoryController::class);
+    // update_becuase_put and putch no word multi part form
+    Route::post('products/{product}/update', [productController::class, 'update']);
+    Route::apiResource('products', productController::class);
+    // /////////categories///////////
+    Route::apiResource('categories', CategoryController::class);
 
 });

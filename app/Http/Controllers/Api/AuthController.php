@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Traits\ApiResponse;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -29,7 +29,6 @@ use Illuminate\Validation\ValidationException;
  *     description="Use Bearer Token from login endpoint"
  * )
  */
-
 class AuthController extends Controller
 {
     use ApiResponse;
@@ -40,16 +39,20 @@ class AuthController extends Controller
      *     path="/api/register",
      *     summary="Register a new user",
      *     tags={"Auth"},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name","email","password","password_confirmation"},
+     *
      *             @OA\Property(property="name", type="string", example="Ali"),
      *             @OA\Property(property="email", type="string", format="email", example="ali@example.com"),
      *             @OA\Property(property="password", type="string", example="password123"),
      *             @OA\Property(property="password_confirmation", type="string", example="password123")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="User registered successfully"
@@ -83,14 +86,18 @@ class AuthController extends Controller
      *     path="/api/login",
      *     summary="Login user",
      *     tags={"Auth"},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"email","password"},
+     *
      *             @OA\Property(property="email", type="string", format="email", example="ali@example.com"),
      *             @OA\Property(property="password", type="string", example="password123")
      *         )
      *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Login successful"
@@ -108,17 +115,17 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8',
         ]);
-        
-        $user =User::where('email',$validated['email'])->first();
-        
-        if(! $user || ! Hash::check($validated['password'], $user->password))
-        {
-           throw ValidationException::withMessages([
-               'email' => ['The provided credentials are incorrect.'],
-           ]);
-        }   
+
+        $user = User::where('email', $validated['email'])->first();
+
+        if (! $user || ! Hash::check($validated['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+        }
         $user->tokens()->delete();
         $token = $user->createToken('api-token')->plainTextToken;
+
         return $this->successResponse('User logged in successfully', [
             'user' => $user,
             'token' => $token,
@@ -131,6 +138,7 @@ class AuthController extends Controller
      *     summary="Logout current user",
      *     tags={"Auth"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Logged out successfully"
@@ -144,6 +152,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
+
         return $this->successResponse('User logged out successfully');
     }
 
@@ -153,6 +162,7 @@ class AuthController extends Controller
      *     summary="Get authenticated user",
      *     tags={"Auth"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Authenticated user fetched successfully"

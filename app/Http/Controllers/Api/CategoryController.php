@@ -19,6 +19,7 @@ class CategoryController extends Controller
      *     summary="List categories",
      *     tags={"Categories"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Response(response=200, description="Categories fetched successfully")
      * )
      */
@@ -35,14 +36,18 @@ class CategoryController extends Controller
      *     summary="Create category",
      *     tags={"Categories"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
      *             required={"name"},
+     *
      *             @OA\Property(property="name", type="string", example="Electronics"),
      *             @OA\Property(property="description", type="string", example="Electronic devices")
      *         )
      *     ),
+     *
      *     @OA\Response(response=201, description="Category created successfully")
      * )
      */
@@ -59,7 +64,9 @@ class CategoryController extends Controller
      *     summary="Get single category",
      *     tags={"Categories"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(name="category", in="path", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\Response(response=200, description="Category fetched successfully"),
      *     @OA\Response(response=404, description="Not found")
      * )
@@ -75,14 +82,19 @@ class CategoryController extends Controller
      *     summary="Update category",
      *     tags={"Categories"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(name="category", in="path", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\RequestBody(
      *         required=true,
+     *
      *         @OA\JsonContent(
+     *
      *             @OA\Property(property="name", type="string"),
      *             @OA\Property(property="description", type="string")
      *         )
      *     ),
+     *
      *     @OA\Response(response=200, description="Category updated successfully")
      * )
      */
@@ -99,7 +111,9 @@ class CategoryController extends Controller
      *     summary="Delete category",
      *     tags={"Categories"},
      *     security={{"sanctum":{}}},
+     *
      *     @OA\Parameter(name="category", in="path", required=true, @OA\Schema(type="integer")),
+     *
      *     @OA\Response(response=200, description="Category deleted successfully")
      * )
      */
