@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,8 +13,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Avoid resolving a non-existent named "login" route for guest redirects.
+        $middleware->redirectGuestsTo('/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Force JSON error responses for API routes, even when Accept is */*.
+        $exceptions->shouldRenderJsonWhen(function (Request $request, \Throwable $e): bool {
+            return $request->is('api/*') || $request->expectsJson();
+        });
     })->create();

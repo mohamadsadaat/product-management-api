@@ -2,6 +2,14 @@
 
 A comprehensive RESTful Product Management API built with Laravel 12 for managing products with advanced features including authentication, CRUD operations, filtering, sorting, search, pagination, categories, and soft deletes.
 
+## 🌐 Live Demo
+
+**API Base URL**: [https://product-management-api-main-xoagtm.free.laravel.cloud/](https://product-management-api-main-xoagtm.free.laravel.cloud/)
+
+**API Documentation**: [Swagger UI](https://product-management-api-main-xoagtm.free.laravel.cloud/api/documentation)
+
+The API is now live and ready for testing! Use the endpoints below with the base URL above.
+
 ## 🚀 Features
 
 ### Authentication & Security
@@ -153,7 +161,7 @@ composer run test
 
 #### Register
 ```bash
-curl -X POST http://localhost:8000/api/register \
+curl -X POST https://product-management-api-main-xoagtm.free.laravel.cloud/api/register \
   -H "Content-Type: application/json" \
   -d '{
     "name": "John Doe",
@@ -165,7 +173,7 @@ curl -X POST http://localhost:8000/api/register \
 
 #### Login
 ```bash
-curl -X POST http://localhost:8000/api/login \
+curl -X POST https://product-management-api-main-xoagtm.free.laravel.cloud/api/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "john@example.com",
@@ -177,7 +185,7 @@ curl -X POST http://localhost:8000/api/login \
 
 #### Create Product
 ```bash
-curl -X POST http://localhost:8000/api/products \
+curl -X POST https://product-management-api-main-xoagtm.free.laravel.cloud/api/products \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: multipart/form-data" \
   -F "name=Product Name" \
@@ -192,13 +200,13 @@ curl -X POST http://localhost:8000/api/products \
 
 #### List Products with Filters
 ```bash
-curl -X GET "http://localhost:8000/api/products?search=laptop&status=active&min_price=500&max_price=2000&sort_by=price&sort_direction=asc&per_page=20" \
+curl -X GET "https://product-management-api-main-xoagtm.free.laravel.cloud/api/products?search=laptop&status=active&min_price=500&max_price=2000&sort_by=price&sort_direction=asc&per_page=20" \
   -H "Authorization: Bearer YOUR_TOKEN"
 ```
 
 #### Update Product
 ```bash
-curl -X POST http://localhost:8000/api/products/1/update \
+curl -X POST https://product-management-api-main-xoagtm.free.laravel.cloud/api/products/1/update \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: multipart/form-data" \
   -F "name=Updated Product Name" \
@@ -258,7 +266,8 @@ product-api/
 
 ## 🧪 Testing
 
-Run the test suite:
+### Local Testing
+Run the test suite locally:
 
 ```bash
 # Run all tests
@@ -270,6 +279,17 @@ php artisan test --filter ProductTest
 # Generate coverage report
 php artisan test --coverage
 ```
+
+### Live API Testing
+Test the live API using the base URL: `https://product-management-api-main-xoagtm.free.laravel.cloud/`
+
+**Interactive Documentation**: Visit [Swagger UI](https://product-management-api-main-xoagtm.free.laravel.cloud/api/documentation) for interactive API testing with built-in authentication.
+
+You can use tools like:
+- **Swagger UI** - Interactive API documentation with testing capabilities
+- **Postman** - Import the API endpoints
+- **Insomnia** - REST client for API testing
+- **curl** - Command line examples provided above
 
 ## 🔒 Security Features
 
@@ -364,9 +384,11 @@ This project is licensed under the MIT License.
 ## 📞 Support
 
 For support and questions, please contact:
+- **Live API**: [https://product-management-api-main-xoagtm.free.laravel.cloud/](https://product-management-api-main-xoagtm.free.laravel.cloud/)
 - Email: mohamadsadaat@example.com
 - GitHub: [@mohamadsadaat](https://github.com/mohamadsadaat)
 
 ---
 
+**🚀 Live API Ready for Production**
 **Built with ❤️ using Laravel 12**
